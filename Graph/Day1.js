@@ -151,15 +151,3 @@ const buildGraph = (equations, values) => {
 
 
 // ================================================================================================ //
-
-/**
- * 721. Accounts Merge [Medium]
- */
-
-/**
- * @param {string[][]} accounts
- * @return {string[][]}
- */
-var accountsMerge = function(accounts) {
-    
-};
