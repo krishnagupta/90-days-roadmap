@@ -21,86 +21,115 @@
  *    else skip
  */
 
-class Graph {
-    constructor() {
-        this.vertices = [];
-        this.adjacencyList = {};
-    }
-
-    addVertex(vertex) {
-        this.vertices.push(vertex);
-        this.adjacencyList[vertex] = {};
-    }
-
-    addEdge(vertex1, vertex2, weight) {
-        this.adjacencyList[vertex1][vertex2] = weight;
-    }
-
-    changeWeight(vertex1, vertex2, weight) {
-        this.adjacencyList[vertex1][vertex2] = weight;
-    }
-
-    dijkstra(source) {
-        let distances = {},
-            parents = {},
-            visited = new Set();
-        for (let i = 0; i < this.vertices.length; i++) {
-            if (this.vertices[i] === source) {
-                distances[source] = 0;
-            } else {
-                distances[this.vertices[i]] = Infinity;
-            }
-            parents[this.vertices[i]] = null;
+// A Javascript program for Dijkstra's single
+// source shortest path algorithm.
+// The program is for adjacency matrix
+// representation of the graph    
+let V = 9;
+ 
+// A utility function to find the
+// vertex with minimum distance
+// value, from the set of vertices
+// not yet included in shortest
+// path tree
+function minDistance(dist,sptSet)
+{
+     
+    // Initialize min value
+    let min = Number.MAX_VALUE;
+    let min_index = -1;
+     
+    for(let v = 0; v < V; v++)
+    {
+        if (sptSet[v] == false && dist[v] <= min)
+        {
+            min = dist[v];
+            min_index = v;
         }
-        
-        let currVertex = this.vertexWithMinDistance(distances, visited);
-
-        while (currVertex !== null) {
-            let distance = distances[currVertex],
-                neighbors = this.adjacencyList[currVertex];
-            for (let neighbor in neighbors) {
-                let newDistance = distance + neighbors[neighbor];
-                if (distances[neighbor] > newDistance) {
-                    distances[neighbor] = newDistance;
-                    parents[neighbor] = currVertex;
-                }
-            }
-            visited.add(currVertex);
-            currVertex = this.vertexWithMinDistance(distances, visited);
-        }
-
-        console.log(parents);
-        console.log(distances);
     }
-
-    vertexWithMinDistance(distances, visited) {
-        let minDistance = Infinity,
-            minVertex = null;
-        for (let vertex in distances) {
-            let distance = distances[vertex];
-            if (distance < minDistance && !visited.has(vertex)) {
-                minDistance = distance;
-                minVertex = vertex;
-            }
-        }
-        return minVertex;
+    return min_index;
+}
+ 
+// A utility function to print
+// the constructed distance array
+function printSolution(dist)
+{
+    document.write("Vertex \t\t Distance from Source<br>");
+    for(let i = 0; i < V; i++)
+    {
+        document.write(i + " \t\t " +
+                 dist[i] + "<br>");
     }
 }
-
-let g = new Graph();
-g.addVertex("start");
-g.addVertex("A");
-g.addVertex("B");
-g.addVertex("finish");
-
-g.addEdge("start", "A", 6);
-g.addEdge("start", "B", 2);
-g.addEdge("A", "finish", 1);
-g.addEdge("B", "A", 3);
-g.addEdge("B", "finish", 5)
-g.dijkstra("start");
-
-
+ 
+// Function that implements Dijkstra's
+// single source shortest path algorithm
+// for a graph represented using adjacency
+// matrix representation
+function dijkstra(graph, src)
+{
+    let dist = new Array(V);
+    let sptSet = new Array(V);
+     
+    // Initialize all distances as
+    // INFINITE and stpSet[] as false
+    for(let i = 0; i < V; i++)
+    {
+        dist[i] = Number.MAX_VALUE;
+        sptSet[i] = false;
+    }
+     
+    // Distance of source vertex
+    // from itself is always 0
+    dist[src] = 0;
+     
+    // Find shortest path for all vertices
+    for(let count = 0; count < V - 1; count++)
+    {
+         
+        // Pick the minimum distance vertex
+        // from the set of vertices not yet
+        // processed. u is always equal to
+        // src in first iteration.
+        let u = minDistance(dist, sptSet);
+         
+        // Mark the picked vertex as processed
+        sptSet[u] = true;
+         
+        // Update dist value of the adjacent
+        // vertices of the picked vertex.
+        for(let v = 0; v < V; v++)
+        {
+             
+            // Update dist[v] only if is not in
+            // sptSet, there is an edge from u
+            // to v, and total weight of path
+            // from src to v through u is smaller
+            // than current value of dist[v]
+            if (!sptSet[v] && graph[u][v] != 0 &&
+                   dist[u] != Number.MAX_VALUE &&
+                   dist[u] + graph[u][v] < dist[v])
+            {
+                dist[v] = dist[u] + graph[u][v];
+            }
+        }
+    }
+     
+    // Print the constructed distance array
+    printSolution(dist);
+}
+ 
+// Driver code
+let graph = [ [ 0, 4, 0, 0, 0, 0, 0, 8, 0 ],
+              [ 4, 0, 8, 0, 0, 0, 0, 11, 0 ],
+              [ 0, 8, 0, 7, 0, 4, 0, 0, 2 ],
+              [ 0, 0, 7, 0, 9, 14, 0, 0, 0],
+              [ 0, 0, 0, 9, 0, 10, 0, 0, 0 ],
+              [ 0, 0, 4, 14, 10, 0, 2, 0, 0],
+              [ 0, 0, 0, 0, 0, 2, 0, 1, 6 ],
+              [ 8, 11, 0, 0, 0, 0, 1, 0, 7 ],
+              [ 0, 0, 2, 0, 0, 0, 6, 7, 0 ] ]
+dijkstra(graph, 0);
 
 // ================================================================================================= //
 
@@ -116,7 +145,61 @@ g.dijkstra("start");
  * @return {number}
  */
 var networkDelayTime = function(times, n, k) {
+    let graph = {}, costs = {}, parents = {}, processed = {}, processedCounter = 0;
+
+    for(let time of times) {
+        if(!graph[time[0]]) {
+            graph[time[0]] = {}
+        }
+        graph[time[0]][time[1]] = time[2];
+    }
+
+    for(let i=1; i<=n; i++) {
+        costs[i] = Infinity;
+        processed[i] = false;
+    }
+
+    costs[k] = 0;
+
+    node = k;
+
+    while (node !== -1) {
+        let cost = costs[node];
+        let neighbours = graph[node];
+        for (let neighbor in neighbours) {
+            let newCostOfNeighbor = cost + neighbours[neighbor];
+            if (newCostOfNeighbor < costs[neighbor]) {
+                costs[neighbor] = newCostOfNeighbor;
+                parents[neighbor] = node;
+            }
+        }
+        processed[node] = true;
+        processedCounter++;
+        node = findLowestCostNode(costs)
+    }
+
+    function findLowestCostNode(costs) {
+        lowestCost = Infinity;
+        lowestCostNode = -1;
+        for (let node in costs) {
+            cost = costs[node];
+            if (cost < lowestCost && !processed[node]) {
+                lowestCost = cost;
+                lowestCostNode = node;
+            }
+        }
+        return lowestCostNode;
+    } 
+
+    if (processedCounter !== n) return -1;
+
+    let set = new Set();
+    for (let node in costs) {
+	    set.add(costs[node]);
+    }
+    let max = Math.max(...set);
     
+    return max;
 };
 
 // ================================================================================================== //
