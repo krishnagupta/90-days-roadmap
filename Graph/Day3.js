@@ -54,12 +54,12 @@ function minDistance(dist,sptSet)
 // the constructed distance array
 function printSolution(dist)
 {
-    document.write("Vertex \t\t Distance from Source<br>");
-    for(let i = 0; i < V; i++)
-    {
-        document.write(i + " \t\t " +
-                 dist[i] + "<br>");
-    }
+    // document.write("Vertex \t\t Distance from Source<br>");
+    // for(let i = 0; i < V; i++)
+    // {
+    //     document.write(i + " \t\t " +
+    //              dist[i] + "<br>");
+    // }
 }
  
 // Function that implements Dijkstra's
@@ -147,12 +147,15 @@ dijkstra(graph, 0);
 var networkDelayTime = function(times, n, k) {
     let graph = {}, costs = {}, parents = {}, processed = {}, processedCounter = 0;
 
+    // Adjacency List creation
     for(let time of times) {
         if(!graph[time[0]]) {
             graph[time[0]] = {}
         }
         graph[time[0]][time[1]] = time[2];
     }
+
+    console.log('graph', graph)
 
     for(let i=1; i<=n; i++) {
         costs[i] = Infinity;
@@ -162,6 +165,8 @@ var networkDelayTime = function(times, n, k) {
     costs[k] = 0;
 
     node = k;
+
+    console.log('costs processed', costs, processed)
 
     while (node !== -1) {
         let cost = costs[node];
@@ -201,5 +206,8 @@ var networkDelayTime = function(times, n, k) {
     
     return max;
 };
+
+let times = [[2,1,1],[2,3,1],[3,4,1]], n = 4, k = 2
+networkDelayTime(times, n, k)
 
 // ================================================================================================== //
