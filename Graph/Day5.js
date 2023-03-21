@@ -5,6 +5,7 @@
 /**
  * @param {character[][]} grid
  * @return {number}
+ * TC O(M*N)
  */
 var numIslands = function(grid) {
     if (grid === null || grid.length === 0) { return 0 }
@@ -40,4 +41,4 @@ var numIslands = function(grid) {
 return islands;
 };
 
-// =================================================================== //
+// ============================================================================================ //
