@@ -8,7 +8,7 @@ class Solution:
 
         tickets.sort()
         for u, v in tickets:
-            adj[u].append(v)
+            adj[u].append(v)    
 
         def dfs(cur):
             if len(res) == len(tickets) + 1:
