@@ -6,7 +6,7 @@ class Solution:
         nums.sort()
 
         for i,a in enumerate(nums):
-            if i>0 and a==nums[i-1]:
+            if i>0 and a==nums[i-1]: # in case of same number
                 continue
             
             l,r = i+1, len(nums)-1
